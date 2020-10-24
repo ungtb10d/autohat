@@ -1,0 +1,81 @@
+# build
+FROM balenalib/%%BALENA_ARCH%%-python:3.8-bullseye-build AS builder
+
+WORKDIR /root
+
+RUN install_packages \
+    build-essential \
+    flex \
+    bison \
+    libftdi-dev \
+    libpixman-1-dev
+
+ENV QEMU_VERSION 5.1.0
+
+COPY hashes .
+
+# https://github.com/nodejs/node/issues/19348
+RUN wget -q https://download.qemu.org/qemu-${QEMU_VERSION}.tar.xz \
+    && sha256sum --ignore-missing --check hashes \
+    && tar -xf qemu-${QEMU_VERSION}.tar.xz \
+    && cd qemu-${QEMU_VERSION} \
+    && ./configure --target-list=i386-softmmu,x86_64-softmmu,arm-softmmu,aarch64-softmmu \
+    && make \
+    && make install
+
+
+# runtime
+FROM balenalib/%%BALENA_ARCH%%-python:3.8-bullseye-run
+
+WORKDIR /root
+
+ENV UDEV on
+ENV INITSYSTEM on
+
+COPY --from=builder /usr/local /usr/local
+
+ENV PATH "/usr/local/bin:${PATH}"
+
+RUN install_packages \
+    wget \
+    unzip \
+    git \
+    openssh-client \
+    rsync \
+    minicom \
+    libxml2 \
+    libpixman-1-0 \
+    libpng16-16 \
+    libjpeg62-turbo \
+    libglib2.0-0 \
+    libfdt1 \
+    zlib1g
+
+ENV VIRTUAL_ENV /root/venv
+
+RUN pip install virtualenv \
+    && python -m venv ${VIRTUAL_ENV}
+
+ENV PATH "${VIRTUAL_ENV}/bin:${PATH}"
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+# last version supporting sync workflow
+ENV BALENA_CLI_VERSION 10.17.6
+
+COPY hashes ./
+
+RUN BALENA_CLI_ZIP="balena-cli-v${BALENA_CLI_VERSION}-linux-$(echo '%%BALENA_ARCH%%' | sed 's/amd/x/' | sed 's/aarch/arm/').zip" \
+    && wget -qO "${BALENA_CLI_ZIP}" "https://github.com/balena-io/balena-cli/releases/download/v${BALENA_CLI_VERSION}/${BALENA_CLI_ZIP}" \
+    && sha256sum --ignore-missing --check hashes \
+    && unzip "${BALENA_CLI_ZIP}" \
+    && rm "${BALENA_CLI_ZIP}"
+
+ENV PATH "/root/balena-cli:${PATH}"
+
+ADD fixtures/ssh_config .ssh/config
+ADD udev_rules/autohat.rules /etc/udev/rules.d/
+
+CMD ["balena-idle"]
