@@ -5,6 +5,11 @@ Change log
 
 * Empty commit to rebuild/publish docker image [ab77]
 
+# v0.2.1
+## (2021-09-23)
+
+* resincli: Show `balena device` output to debug flakey OS version test. [Carlo Miguel F. Cruz]
+
 # v0.2.0
 ## (2021-06-03)
 
