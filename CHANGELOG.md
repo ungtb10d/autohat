@@ -1,6 +1,10 @@
 Change log
 -----------
 
+## v0.3.1 - 2022-06-13
+
+* Update pylibftdi from 0.19.0 to 0.20.0 [Renovate Bot]
+
 ## v0.3.0 - 2022-02-02
 
 * Force public DNS resolution for QEMU guest VMs [ab77]
