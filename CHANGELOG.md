@@ -1,6 +1,10 @@
 Change log
 -----------
 
+## v0.5.0 - 2022-11-04
+
+* Update balenalib/amd64-node Docker tag to v19 [Renovate Bot]
+
 ## v0.4.1 - 2022-11-03
 
 * Update dependency robotframework to 6.0.1 [Renovate Bot]
