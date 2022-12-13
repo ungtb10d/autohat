@@ -1,4 +1,18 @@
 - commits:
+    - subject: Update balenalib/amd64-node Docker tag to v19
+      hash: c1be23d5ab099256d72aeddde0e5356d3ef619c6
+      body: |
+        Update balenalib/amd64-node to 19
+
+        Update balenalib/amd64-node from 18 to 19
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+  version: 0.5.0
+  title: ""
+  date: 2022-12-13T01:11:20.212Z
+- commits:
     - subject: Migrate to Flowzone
       hash: b19621bfddcd6ea3e23609b40affb8b949aee0a5
       body: ""

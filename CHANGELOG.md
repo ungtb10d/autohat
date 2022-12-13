@@ -1,6 +1,10 @@
 Change log
 -----------
 
+## v0.5.0 - 2022-12-13
+
+* Update balenalib/amd64-node Docker tag to v19 [Renovate Bot]
+
 ## v0.4.2 - 2022-12-13
 
 * Migrate to Flowzone [ab77]
